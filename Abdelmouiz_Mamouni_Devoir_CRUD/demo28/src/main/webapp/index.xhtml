@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<h:head>
+    <title>Students Management</title>
+    <h:outputStylesheet library="webjars" name="bootstrap/5.0.0/css/bootstrap.min.css" />
+</h:head>
+<h:body>
+    <div class="container mt-5">
+   <!-- <f:view locale="fr"></f:view> -->
+    <div class="row">
+    <div class="col-md-6">
+        <h:form>
+            <div class="mb-3">
+                <h:commandButton value="English" action="#{studentBean.changeLanguage('en')}" styleClass="btn btn-primary" />
+                <h:commandButton value="French" action="#{studentBean.changeLanguage('fr')}" styleClass="btn btn-primary" />
+            </div>
+        </h:form>
+    </div>
+    <div class="row mt-3">
+    <div class="col-md-6">
+
+    <h:form>
+            <h:dataTable value="#{studentBean.studentsOnCurrentPage}" var="student"
+                         class="table table-striped">
+                <h:column>
+                    <f:facet name="header"><h:outputText value="#{messages.id}"/></f:facet>
+                    <h:outputText value="#{student.id}" rendered="#{studentBean.selectedStudent.id ne student.id}" />
+                    <h:inputText value="#{studentBean.selectedStudent.id}" rendered="#{studentBean.selectedStudent.id eq student.id}" class="form-control" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header">
+                        <h:outputText value="#{messages.first_name}" />
+                    </f:facet>
+                    <h:outputText value="#{student.first_name}" rendered="#{studentBean.selectedStudent.id ne student.id}" />
+                    <h:inputText id="first-name-vald" value="#{studentBean.selectedStudent.first_name}" rendered="#{studentBean.selectedStudent.id eq student.id}" class="form-control" />
+                </h:column>
+
+
+                <h:column>
+                    <f:facet name="header"><h:outputText value="#{messages.age}"/></f:facet>
+                    <h:outputText value="#{student.age}" rendered="#{studentBean.selectedStudent.id ne student.id}" />
+                    <h:inputText value="#{studentBean.selectedStudent.age}" rendered="#{studentBean.selectedStudent.id eq student.id}" class="form-control" />
+                </h:column>
+                <h:column>
+                    <f:facet name="header"><h:outputText value="#{messages.email}"/></f:facet>
+                    <h:outputText value="#{student.email}" rendered="#{studentBean.selectedStudent.id ne student.id}" />
+                    <h:inputText value="#{studentBean.selectedStudent.email}" rendered="#{studentBean.selectedStudent.id eq student.id}" class="form-control" />
+                </h:column>
+
+                <h:column>
+                    <f:facet name="header"><h:outputText value="#{messages.actions}"/></f:facet>
+                    <h:commandButton value="#{messages.modify}" action="#{studentBean.modifyStudent(student)}" class="btn btn-primary"/>
+                    <h:commandButton value="#{messages.save}" action="#{studentBean.saveModifiedStudent()}" rendered="#{studentBean.selectedStudent.id eq student.id}" class="btn btn-success"/>
+                    <h:commandButton value="#{messages.delete}" action="#{studentBean.deleteStudent(student)}" class="btn btn-danger"/>
+                </h:column>
+            </h:dataTable>
+            <h:commandButton value="#{messages.add_student}" action="#{studentBean.showAddForm}" class="btn btn-primary" />
+
+        </h:form>
+
+        <h:form>
+            <h:panelGroup rendered="#{studentBean.showForm}">
+                <!-- Input fields for adding a new student -->
+                <h:inputText value="#{studentBean.newStudent.id}"  class="form-control" />
+                <h:inputText id="first_name_val" value="#{studentBean.newStudent.first_name}" required="true" class="form-control" validatorMessage="#{messages.error_short_msg}">
+                <f:validateLength  minimum="3"  maximum="20"/>
+                </h:inputText>
+                <h:message for="first_name_val" />
+                <h:inputText value="#{studentBean.newStudent.age}" required="true" class="form-control" />
+                <h:inputText id="email_val" value="#{studentBean.newStudent.email}" required="true" class="form-control" >
+                <f:validator validatorId="emailValidator"/>
+                </h:inputText>
+                <h:message for="email_val" />
+                <h:commandButton value="#{messages.save}" action="#{studentBean.addNewStudent}" class="btn btn-success" />
+            </h:panelGroup>
+        </h:form>
+        <h:form>
+            <br/>
+
+            <h:commandButton value="#{messages.previous}" action="#{studentBean.previousPage}" rendered="#{studentBean.currentPage > 1}" class="btn btn-secondary" />
+            <h:outputText value="#{messages.page} #{studentBean.currentPage}" action="#{studentBean.currentPage}" class="btn btn-info"/>
+            <h:commandButton value="#{messages.next}" action="#{studentBean.nextPage}" rendered="#{not empty studentBean.studentsOnNextPage}" class="btn btn-secondary" />
+        </h:form>
+    </div>
+    </div>
+    </div>
+    </div>
+</h:body>
+</html>
